@@ -1,38 +1,34 @@
 from tkinter import *
-from tkinter import  ttk
+from tkinter import ttk
 import psutil
 
-root = Tk()
-max_num = [0, 0]
+root = Tk()                                                                    #Створення вікна.
 
-root['bg'] = '#fafafa'
-root.title('Monitor network')
-root.geometry('800x450')
+root['bg'] = '#fafafa'                                                         #Колір фону вікна.
+root.title('Monitor network')                                                  #Створено назву вікна.
+root.geometry('800x450')                                                       #Задано розмірі вікна.
 
-root.resizable()
-root.resizable(width=False, height=False)
+root.resizable(width=False, height=False)                                      #Блокування зміни розміру вікна користувчем.
 
-canvas = Canvas(root, highlightcolor="#E8E8E8")
-canvas.pack(side=LEFT, fill=Y)
+canvas = Canvas(root, highlightcolor="#E8E8E8")                                #Створення поля для рисування.
+canvas.pack(side=LEFT, fill=Y)                                                 #Відображення з лівої сторони та по всій висоті.
 
-title = Label(canvas, text="Доступні мережі:", bg="#fafafa", font=40)
+title = Label(canvas, text="Доступні мережі:", bg="#fafafa", font=40)          #Створення поля для тексту.
 title.pack()
 
-graf = Canvas(root, bg='#E8E8E8', width=560, height=320)
-graf.pack(anchor=NE)
+graf = Canvas(root, bg='#E8E8E8', width=560, height=320)                       #Створення поля для рисування графіка.
+graf.pack(anchor=NE)                                                           #Відображення від верхнього правого кута.
 
-for i in range(0, 280, 40):
+for i in range(0, 280, 40):                                                    #Цикл для рисування горизонтальних ліній.
     graf.create_line(0, i + 40, 560, i + 40, fill="#C7C7C7")
-    print(i)
 
-for i in range(0, 520, 40):
+for i in range(0, 520, 40):                                                    #Цикл для рисування горизонтальних ліній.
     graf.create_line(i + 40, 0, i + 40, 320, fill="#C7C7C7")
-    print(i)
 
-graf.create_rectangle(3, 3, 558, 318, outline="#6E6E6E", width=2)
+graf.create_rectangle(3, 3, 558, 318, outline="#6E6E6E", width=2)              #Рисування периметру графіка.
 
-for nic, addrs in psutil.net_if_addrs().items():
+for nic, addrs in psutil.net_if_addrs().items():                               #Додає кнопки згідно кількості мереж.
     btn = ttk.Button(canvas, text="%s:" % (nic))
     btn.pack(fill=X, ipadx=10, ipady=10)
 
-root.mainloop()
+root.mainloop()                                                                #Запуск вікна.
