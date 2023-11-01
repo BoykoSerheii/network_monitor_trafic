@@ -12,7 +12,7 @@ root.geometry('800x450')
 root.resizable()
 root.resizable(width=False, height=False)
 
-canvas = Canvas(root)
+canvas = Canvas(root, highlightcolor="#E8E8E8")
 canvas.pack(side=LEFT, fill=Y)
 
 title = Label(canvas, text="Доступні мережі:", bg="#fafafa", font=40)
@@ -23,6 +23,10 @@ graf.pack(anchor=NE)
 
 for i in range(0, 280, 40):
     graf.create_line(0, i + 40, 560, i + 40, fill="#C7C7C7")
+    print(i)
+
+for i in range(0, 520, 40):
+    graf.create_line(i + 40, 0, i + 40, 320, fill="#C7C7C7")
     print(i)
 
 graf.create_rectangle(3, 3, 558, 318, outline="#6E6E6E", width=2)
