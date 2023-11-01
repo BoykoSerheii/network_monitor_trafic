@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import  ttk
 
 root = Tk()
 max_num = [0, 0]
@@ -13,11 +14,12 @@ root.resizable()
 canvas = Canvas(root, width=600, height=450)
 canvas.pack(side=LEFT, fill=Y)
 
-title = Label(canvas, text="text", bg="#fafafa", font=40)
+title = Label(canvas, text="Доступні мережі:", bg="#fafafa", font=40)
 title.pack()
-entry = Entry(canvas)
-entry.pack()
-pas = Spinbox(canvas)
-pas.pack()
+
+for r in range(3):
+    for c in range(3):
+        btn = ttk.Button(canvas, text=f"({r},{c})")
+        btn.pack()
 
 root.mainloop()
