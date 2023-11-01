@@ -10,7 +10,7 @@ root.title('Monitor network')
 root.geometry('800x450')
 
 root.resizable()
-#root.resizable(width=False, height=False)
+root.resizable(width=False, height=False)
 
 canvas = Canvas(root)
 canvas.pack(side=LEFT, fill=Y)
