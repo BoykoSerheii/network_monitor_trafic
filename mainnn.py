@@ -20,6 +20,6 @@ title.pack()
 
 for nic, addrs in psutil.net_if_addrs().items():
     btn = ttk.Button(canvas, text="%s:" % (nic))
-    btn.pack(fill=X)
+    btn.pack(fill=X, ipadx=10, ipady=10)
 
 root.mainloop()
