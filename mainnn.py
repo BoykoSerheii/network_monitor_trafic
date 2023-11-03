@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import psutil
+import threading
 
 root = Tk()                                                                    #Створення вікна.
 
@@ -30,5 +31,9 @@ graf.create_rectangle(3, 3, 558, 318, outline="#6E6E6E", width=2)              #
 for nic, addrs in psutil.net_if_addrs().items():                               #Додає кнопки згідно кількості мереж.
     btn = ttk.Button(canvas, text="%s:" % (nic))
     btn.pack(fill=X, ipadx=10, ipady=10)
+
+def f():
+  threading.Timer(5.0, f).start()  # Перезапуск через 5 секунд
+  print("Hello!")
 
 root.mainloop()                                                                #Запуск вікна.
