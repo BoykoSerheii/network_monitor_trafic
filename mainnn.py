@@ -36,7 +36,6 @@ def paint():
         graf.create_line(i, mass[x[0]] + 40, i + 40, mass[x[1]] + 40, fill="#D9180C")
         x[0] = x[0] + 1
         x[1] = x[1] + 1
-        print(x[0], x[1])
 
     graf.create_rectangle(3, 3, 559, 321, outline="#6E6E6E", width=2)          #Рисування периметру графіка.
 
@@ -53,13 +52,28 @@ def poll(interval):
     pnic_after = psutil.net_io_counters()
     return (pnic_before, pnic_after)
 
+max_num = [0, 0]
+def btn_click():
+    before, after = poll(1)
+    bef = list(before)
+    aft = list(after)
+    bef[0] = bef[0] * 8
+    bef[1] = bef[1] * 8
+    aft[0] = aft[0] * 8
+    aft[1] = aft[1] * 8
+    if aft[0]-bef[0] > max_num[0]:
+        max_num[0] = aft[0]-bef[0]
+    if aft[1]-bef[1] > max_num[1]:
+        max_num[1] = aft[1]-bef[1]
+
 
 for nic, addrs in psutil.net_if_addrs().items():                               #Додає кнопки згідно кількості мереж.
     btn = ttk.Button(canvas, text="%s:" % (nic))
     btn.pack(fill=X, ipadx=10, ipady=10)
 
 def f():
-  threading.Timer(1, f).start()  # Перезапуск через 5 секунд
+  threading.Timer(1, f).start()                                                #Перезапуск через 5 секунд
+  btn_click()
   paint()
 
 f()
