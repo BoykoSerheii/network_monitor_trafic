@@ -65,7 +65,11 @@ def btn_click():
         max_num[0] = aft[0]-bef[0]
     if aft[1]-bef[1] > max_num[1]:
         max_num[1] = aft[1]-bef[1]
+    update(aft[0]-bef[0])
 
+def update(date):
+    mass.pop(0)
+    mass.append(date/100)
 
 for nic, addrs in psutil.net_if_addrs().items():                               #Додає кнопки згідно кількості мереж.
     btn = ttk.Button(canvas, text="%s:" % (nic))
