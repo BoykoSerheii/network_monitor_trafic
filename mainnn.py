@@ -3,6 +3,7 @@ from tkinter import ttk
 import psutil
 import threading
 import time
+from psutil._common import bytes2human
 
 root = Tk()                                                                    #Створення вікна.
 
@@ -21,28 +22,34 @@ title.pack()
 graf = Canvas(root, bg='#E8E8E8', width=560, height=320)                       #Створення поля для рисування графіка.
 graf.pack(anchor=NE)                                                           #Відображення від верхнього правого кута.
 
-num = [0]
-mass = [0, 1, 60, 100, 20, 20, 580, 0, 20, 25, 40, 40, 60, 100, 10]
+title = Label(root, text="out trafic: 0", bg="#fafafa", font=40)
+title.pack(anchor=W)
+
+num = [40]
+mass = []
+for i in range(57):
+    mass.append(0)
+
 def paint():
     graf.delete(ALL)
     for i in range(0, 280, 40):                                                #Цикл для рисування горизонтальних ліній.
         graf.create_line(0, i + 40, 560, i + 40, fill="#C7C7C7")
 
-    for i in range(0, 560, 40):                                                #Цикл для рисування горизонтальних ліній.
+    for i in range(0, 560, 40):                                                #Цикл для рисування вертикальних ліній.
         graf.create_line(i + num[0], 0, i + num[0], 320, fill="#C7C7C7")
 
     x = [0, 1]
-    for i in range(0, 560, 40):
-        graf.create_line(i, mass[x[0]] + 40, i + 40, mass[x[1]] + 40, fill="#D9180C")
+    for i in range(0, 560, 10):                                                #Цикл для рисування лінії даних.
+        graf.create_line(i, (mass[x[0]]-560)*(-1), i + 10, (mass[x[1]]-560)*(-1), fill="#D9180C")
         x[0] = x[0] + 1
         x[1] = x[1] + 1
 
     graf.create_rectangle(3, 3, 559, 321, outline="#6E6E6E", width=2)          #Рисування периметру графіка.
 
-    if num[0] != 40:
-        num[0] = num[0] + 10
+    if num[0] != 0:
+        num[0] = num[0] - 10
     else:
-        num[0] = 10
+        num[0] = 30
 
 def poll(interval):
     """Необработанная статистика в интервале `interval`."""
@@ -66,6 +73,7 @@ def btn_click():
     if aft[1]-bef[1] > max_num[1]:
         max_num[1] = aft[1]-bef[1]
     update(aft[0]-bef[0])
+    title['text'] = f"out trafic: {bytes2human(aft[0] - bef[0])}/s."
 
 def update(date):
     mass.pop(0)
