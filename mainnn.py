@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import psutil
 import threading
+import time
 
 root = Tk()                                                                    #Створення вікна.
 
@@ -43,6 +44,15 @@ def paint():
         num[0] = num[0] + 10
     else:
         num[0] = 10
+
+def poll(interval):
+    """Необработанная статистика в интервале `interval`."""
+    pnic_before = psutil.net_io_counters()
+    # спим в течении `interval`
+    time.sleep(interval)
+    pnic_after = psutil.net_io_counters()
+    return (pnic_before, pnic_after)
+
 
 for nic, addrs in psutil.net_if_addrs().items():                               #Додає кнопки згідно кількості мереж.
     btn = ttk.Button(canvas, text="%s:" % (nic))
