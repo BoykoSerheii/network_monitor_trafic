@@ -26,7 +26,8 @@ title = Label(root, text="out trafic: 0", bg="#fafafa", font=40)
 title.pack(anchor=W)
 steps = []
 mass = []
-
+point = [0]
+networkLine = []
 
 
 def paint(canvas, size_cells, step, array_data):
@@ -56,11 +57,12 @@ def paint(canvas, size_cells, step, array_data):
 
 def poll(interval):
     """Необработанная статистика в интервале `interval`."""
-    pnic_before = psutil.net_io_counters()
+    pnic_before = psutil.net_io_counters(pernic=True)
     # спим в течении `interval`
     time.sleep(interval)
-    pnic_after = psutil.net_io_counters()
-    return (pnic_before, pnic_after)
+    pnic_after = psutil.net_io_counters(pernic=True)
+    print(pnic_after)
+    return (pnic_before[f'{networkLine[point[0]]}'], pnic_after[f'{networkLine[point[0]]}'])
 
 max_num = [0, 0]
 def btn_click():
@@ -75,30 +77,34 @@ def btn_click():
         max_num[0] = aft[0]-bef[0]
     if aft[1]-bef[1] > max_num[1]:
         max_num[1] = aft[1]-bef[1]
-    update(aft[0]-bef[0], mass)
+    update(aft[0]-bef[0], mass[point[0]])
     title['text'] = f"out trafic: {bytes2human(aft[0] - bef[0])}/s."
 
 def click_button(name):
-    print(name)
+    point[0] = networkLine.index(name)
 
 def update(date,array_data):
-    print(len(array_data))
     if len(array_data) == 0:
         for i in range(57):
             array_data.append(0)
     array_data.pop(0)
     array_data.append(date/100)
+    print(mass)
 
 for nic, addrs in psutil.net_if_addrs().items():                               #Додає кнопки згідно кількості мереж.
     btn = ttk.Button(canvas, text="%s:" % (nic), command=lambda nic=nic: click_button(nic))
     btn.pack(fill=X, ipadx=10, ipady=10)
+    networkLine.append(nic)
+
+for i in range(len(networkLine)):
+        mass.append([])
 
 def f():
-    threading.Timer(1, f).start()                                                #Перезапуск через 5 секунд
+    threading.Timer(1, f).start()                                                #Перезапуск через 1 секунд
     btn_click()
     size_cells = 20
     count = 10
-    paint(graf, size_cells, count, mass)
+    paint(graf, size_cells, count, mass[point[0]])
 
 
 f()
