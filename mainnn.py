@@ -24,32 +24,35 @@ graf.pack(anchor=NE)                                                           #
 
 title = Label(root, text="out trafic: 0", bg="#fafafa", font=40)
 title.pack(anchor=W)
-
-num = [40]
+steps = []
 mass = []
-for i in range(57):
-    mass.append(0)
 
-def paint():
+
+
+def paint(canvas, size_cells, step, array_data):
+    if len(steps) == 0:
+        steps.append(size_cells)
     graf.delete(ALL)
-    for i in range(0, 280, 40):                                                #Цикл для рисування горизонтальних ліній.
-        graf.create_line(0, i + 40, 560, i + 40, fill="#C7C7C7")
+    canvas_width = canvas.winfo_width()-2
+    canvas_height = canvas.winfo_height()-4
+    for i in range(0, canvas_height-size_cells, size_cells):                                                #Цикл для рисування горизонтальних ліній.
+        graf.create_line(0, i + size_cells, canvas_width, i + size_cells, fill="#C7C7C7")
 
-    for i in range(0, 560, 40):                                                #Цикл для рисування вертикальних ліній.
-        graf.create_line(i + num[0], 0, i + num[0], 320, fill="#C7C7C7")
+    for i in range(0, canvas_width, size_cells):                                                #Цикл для рисування вертикальних ліній.
+        graf.create_line(i + steps[0], 0, i + steps[0], canvas_height, fill="#C7C7C7")
 
     x = [0, 1]
-    for i in range(0, 560, 10):                                                #Цикл для рисування лінії даних.
-        graf.create_line(i, (mass[x[0]]-560)*(-1), i + 10, (mass[x[1]]-560)*(-1), fill="#D9180C")
+    for i in range(0, canvas_width, step):                                                #Цикл для рисування лінії даних.
+        graf.create_line(i, (array_data[x[0]]-canvas_width)*(-1), i + step, (array_data[x[1]]-canvas_width)*(-1), fill="#D9180C")
         x[0] = x[0] + 1
         x[1] = x[1] + 1
 
-    graf.create_rectangle(3, 3, 559, 321, outline="#6E6E6E", width=2)          #Рисування периметру графіка.
+    graf.create_rectangle(3, 3, canvas_width-1, canvas_height+1, outline="#6E6E6E", width=2)          #Рисування периметру графіка.
 
-    if num[0] != 0:
-        num[0] = num[0] - 10
+    if steps[0] != 0:
+        steps[0] = steps[0] - step
     else:
-        num[0] = 30
+        steps[0] = size_cells - step
 
 def poll(interval):
     """Необработанная статистика в интервале `interval`."""
@@ -72,21 +75,31 @@ def btn_click():
         max_num[0] = aft[0]-bef[0]
     if aft[1]-bef[1] > max_num[1]:
         max_num[1] = aft[1]-bef[1]
-    update(aft[0]-bef[0])
+    update(aft[0]-bef[0], mass)
     title['text'] = f"out trafic: {bytes2human(aft[0] - bef[0])}/s."
 
-def update(date):
-    mass.pop(0)
-    mass.append(date/100)
+def click_button(name):
+    print(name)
+
+def update(date,array_data):
+    print(len(array_data))
+    if len(array_data) == 0:
+        for i in range(57):
+            array_data.append(0)
+    array_data.pop(0)
+    array_data.append(date/100)
 
 for nic, addrs in psutil.net_if_addrs().items():                               #Додає кнопки згідно кількості мереж.
-    btn = ttk.Button(canvas, text="%s:" % (nic))
+    btn = ttk.Button(canvas, text="%s:" % (nic), command=lambda nic=nic: click_button(nic))
     btn.pack(fill=X, ipadx=10, ipady=10)
 
 def f():
-  threading.Timer(1, f).start()                                                #Перезапуск через 5 секунд
-  btn_click()
-  paint()
+    threading.Timer(1, f).start()                                                #Перезапуск через 5 секунд
+    btn_click()
+    size_cells = 20
+    count = 10
+    paint(graf, size_cells, count, mass)
+
 
 f()
 root.mainloop()                                                                #Запуск вікна.
