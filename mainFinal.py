@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import psutil
 import threading
 import time
@@ -24,10 +24,13 @@ graf.pack(anchor=NE)                                                           #
 
 title = Label(root, text="out trafic: 0", bg="#fafafa", font=40)
 title.pack(anchor=W)
+title1 = Label(root, text="input trafic: 0", bg="#fafafa", font=40)
+title1.pack(anchor=W)
 steps = []
 mass = []
 point = [0]
 networkLine = []
+status = [1]
 
 
 def paint(canvas, size_cells, step, array_data):
@@ -79,6 +82,7 @@ def btn_click():
         max_num[1] = aft[1]-bef[1]
     update(aft[0]-bef[0], mass[point[0]])
     title['text'] = f"out trafic: {bytes2human(aft[0] - bef[0])}/s."
+    title1['text'] = f"input trafic: {bytes2human(aft[1] - bef[1])}/s."
 
 def click_button(name):
     point[0] = networkLine.index(name)
@@ -100,12 +104,19 @@ for i in range(len(networkLine)):
         mass.append([])
 
 def f():
-    threading.Timer(1, f).start()                                                #Перезапуск через 1 секунд
+    if status[0] == 1:
+        threading.Timer(1, f).start()                                                #Перезапуск через 1 секунд
+    else:
+        status[0] = 0
     btn_click()
     size_cells = 20
     count = 10
     paint(graf, size_cells, count, mass[point[0]])
 
+def on_closing():
+    status[0] = 0
+    root.destroy()
 
 f()
+root.protocol("WM_DELETE_WINDOW", on_closing)
 root.mainloop()                                                                #Запуск вікна.
